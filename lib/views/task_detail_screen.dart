@@ -112,7 +112,7 @@ class TaskDetailScreen extends StatelessWidget {
                     ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      _taskController.delete(t);
+                      _taskController.deleteTask(t);
                       Get.back();
                       Get.snackbar("Deleted", "Task deleted successfully");
                     },

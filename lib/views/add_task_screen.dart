@@ -22,7 +22,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String _selectedPriority = "Low";
   List<String> priorityList = ["Low", "Medium", "High"];
   String _selectedCategory = "Work";
-  List<String> categoryList = ["Work", "Personal", "Shopping", "Health"];
+  List<String> categoryList = [];
 
   @override
   void initState() {
@@ -34,6 +34,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       _selectedPriority = widget.task!.priority ?? "Low";
       _selectedCategory = widget.task!.category ?? "Work";
     }
+  }
+
+  bool _selectedCategoryExists() {
+    return _taskController.categories.contains(_selectedCategory);
   }
 
   @override
@@ -110,31 +114,55 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     child: MyInputField(
                       title: "Category",
                       hint: _selectedCategory,
-                      widget: DropdownButton(
-                        icon: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.grey,
-                        ),
-                        iconSize: 32,
-                        elevation: 4,
-                        style: subTitleStyle,
-                        underline: Container(height: 0),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedCategory = newValue!;
-                          });
-                        },
-                        items: categoryList.map<DropdownMenuItem<String>>((
-                          String value,
-                        ) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Colors.grey),
+                      widget: Obx(
+                        () => DropdownButton<String>(
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.grey,
+                          ),
+                          iconSize: 32,
+                          elevation: 4,
+                          style: subTitleStyle,
+                          underline: Container(height: 0),
+                          value: _selectedCategoryExists()
+                              ? _selectedCategory
+                              : null,
+                          onChanged: (String? newValue) {
+                            if (newValue == '__add__') {
+                              _showAddCategoryDialog();
+                            } else if (newValue != null) {
+                              setState(() {
+                                _selectedCategory = newValue;
+                              });
+                            }
+                          },
+                          items: [
+                            ..._taskController.categories
+                                .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  );
+                                })
+                                .toList(),
+                            DropdownMenuItem<String>(
+                              value: '__add__',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add, color: primaryClr),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Add category',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        }).toList(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -240,6 +268,42 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ),
         SizedBox(width: 20),
       ],
+    );
+  }
+
+  _showAddCategoryDialog() {
+    final TextEditingController _categoryController = TextEditingController();
+    Get.defaultDialog(
+      title: 'Add Category',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _categoryController,
+            decoration: InputDecoration(hintText: 'Category name'),
+          ),
+        ],
+      ),
+      textConfirm: 'Add',
+      textCancel: 'Cancel',
+      onConfirm: () async {
+        String newCat = _categoryController.text.trim();
+        if (newCat.isNotEmpty) {
+          await _taskController.addCategory(newCat);
+          setState(() {
+            _selectedCategory = newCat;
+          });
+        } else {
+          Get.snackbar(
+            'Info',
+            'Enter a category name',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.white,
+            colorText: pinkClr,
+          );
+        }
+        Get.back();
+      },
     );
   }
 

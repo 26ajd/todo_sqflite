@@ -60,22 +60,23 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Obx(
-            () => DropdownButton<String>(
+          Obx(() {
+            final source = _taskController.categories.isNotEmpty
+                ? _taskController.categories
+                : <String>['All', 'Work', 'Personal', 'Shopping', 'Health'];
+            return DropdownButton<String>(
               value: _taskController.selectedCategory.value,
-              items: <String>['All', 'Work', 'Personal', 'Shopping', 'Health']
-                  .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  })
-                  .toList(),
+              items: source.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
               onChanged: (newValue) {
                 _taskController.updateCategory(newValue!);
               },
-            ),
-          ),
+            );
+          }),
           Obx(
             () => DropdownButton<String>(
               value: _taskController.selectedPriority.value,
@@ -156,8 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
       textConfirm: "Delete",
       confirmTextColor: Colors.white,
       onConfirm: () async {
-        await _taskController.delete(task);
-        Get.back(); // close dialog
+        await _taskController.deleteTask(task);
+        Get.back();
       },
       onCancel: () {},
     );
