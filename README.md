@@ -67,16 +67,16 @@ flutter run
 
 ### الصور
 ### 1
-![1](screens\photo_1_2025-12-09_05-50-02.jpg)
+![1](screens/photo_1_2025-12-09_05-50-02.jpg)
 
 ### 2
-![2](screens\photo_2_2025-12-09_05-50-02.jpg)
+![2](screens/photo_2_2025-12-09_05-50-02.jpg)
 
 ### 3
-![3](screens\photo_3_2025-12-09_05-50-02.jpg)
+![3](screens/photo_3_2025-12-09_05-50-02.jpg)
 
 ### 4
-![4](screens\photo_4_2025-12-09_05-50-02.jpg)
+![4](screens/photo_4_2025-12-09_05-50-02.jpg)
 
 ### 5
-![5](screens\photo_5_2025-12-09_05-50-02.jpg)
+![5](screens/photo_5_2025-12-09_05-50-02.jpg)
